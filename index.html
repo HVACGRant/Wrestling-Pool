@@ -1,0 +1,498 @@
+!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wrestling Pool</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0e0e10;--panel:#18181c;--panel2:#222228;--line:#2f2f38;--text:#f2f2f2;--mute:#9a9aa6;--gold:#e0b03a;--gold2:#a9801c;--red:#d3202f;--green:#2bb673}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:radial-gradient(ellipse at top,#2a2118 0%,var(--bg) 55%) fixed;background-color:var(--bg);color:var(--text);font:15px/1.45 Inter,system-ui,sans-serif;min-height:100vh}
+header{padding:20px 16px 10px;text-align:center}
+h1{font-family:'Bebas Neue',Impact,sans-serif;font-size:44px;letter-spacing:2px;margin:0;line-height:1;background:linear-gradient(180deg,#fff0b8,var(--gold) 55%,var(--gold2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--mute);font-size:13px;margin-top:4px}
+nav{position:sticky;top:0;z-index:5;background:rgba(14,14,16,.94);backdrop-filter:blur(6px);display:flex;gap:4px;overflow-x:auto;padding:8px 12px;border-bottom:1px solid var(--line);scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{flex:0 0 auto;background:none;border:0;color:var(--mute);font:600 14px Inter,sans-serif;padding:8px 13px;border-radius:999px;cursor:pointer}
+nav button.on{background:var(--gold);color:#111}
+main{max-width:860px;margin:0 auto;padding:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
+h2{font-family:'Bebas Neue',Impact,sans-serif;font-size:27px;letter-spacing:1px;margin:0 0 10px;color:var(--gold);font-weight:400}
+h3{margin:14px 0 8px;font-size:14px;text-transform:uppercase;letter-spacing:.6px;color:var(--mute)}
+input,select{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:9px;padding:9px 10px;font:inherit;width:100%;min-width:0}
+input:focus,select:focus{outline:2px solid var(--gold);outline-offset:-1px}
+input[type=checkbox]{width:18px;height:18px;accent-color:var(--gold)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.row>*{flex:1 1 150px}
+.row>.auto{flex:0 0 auto}
+.btn{background:var(--gold);color:#111;border:0;border-radius:9px;padding:9px 14px;font:700 14px Inter,sans-serif;cursor:pointer;white-space:nowrap}
+.btn.ghost{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+.btn.red{background:var(--red);color:#fff}
+.btn.sm{padding:6px 10px;font-size:13px}
+.btn:disabled{opacity:.4;cursor:default}
+.mute{color:var(--mute)}.small{font-size:12.5px}.center{text-align:center}
+.lb{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:11px;background:var(--panel2);margin-bottom:6px;border:1px solid var(--line)}
+.lb.top{border-color:var(--gold);background:linear-gradient(90deg,rgba(224,176,58,.2),var(--panel2))}
+.rank{font-family:'Bebas Neue',Impact,sans-serif;font-size:26px;width:30px;text-align:center;color:var(--mute)}
+.lb.top .rank{color:var(--gold)}
+.who{flex:1;display:flex;flex-direction:column;min-width:0}
+.pts{font-family:'Bebas Neue',Impact,sans-serif;font-size:34px;color:var(--gold);line-height:1}
+.badge{display:inline-block;background:linear-gradient(180deg,#ffe28a,var(--gold2));color:#1a1300;font:800 11px Inter,sans-serif;padding:2px 8px;border-radius:999px;letter-spacing:.5px;text-transform:uppercase;vertical-align:middle}
+.mhead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.mnum{font-family:'Bebas Neue',Impact,sans-serif;font-size:20px;color:var(--mute);letter-spacing:1px}
+.sides{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:10px 0}
+.side{flex:1 1 120px;background:var(--panel2);border:2px solid var(--line);color:var(--text);border-radius:11px;padding:12px;font:700 15px Inter,sans-serif;cursor:pointer}
+.side.sel{border-color:var(--gold);background:rgba(224,176,58,.16)}
+.side.won{box-shadow:inset 0 0 0 2px var(--green)}
+.side:disabled{cursor:not-allowed}
+.vs{font-family:'Bebas Neue',Impact,sans-serif;color:var(--red);font-size:20px;flex:0 0 auto}
+.matchup{font-weight:800;font-size:16px;margin:6px 0 10px}
+.matchup .vs{margin:0 6px}
+.chip{display:inline-block;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:4px 9px;margin:3px;font-weight:700;font-size:13px}
+.chip.win{background:var(--gold);color:#111;border-color:var(--gold)}
+.chk{display:flex;align-items:center;gap:7px;white-space:nowrap;cursor:pointer}
+.lock{color:var(--gold);margin:10px 0 0;font-weight:600}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--mute);font-weight:600}
+td.tot{color:var(--gold);font-weight:800}
+.ok{color:var(--green);font-weight:700}.bad{color:var(--red);font-weight:700}
+.item{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+.item input{flex:1}
+.banner{text-align:center;padding:14px;border-radius:12px;background:linear-gradient(180deg,rgba(224,176,58,.25),rgba(224,176,58,.05));border:1px solid var(--gold);font-weight:800;margin-bottom:12px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.field label{display:block;font-size:12.5px;color:var(--mute);margin-bottom:4px}
+.empty{padding:26px 10px;text-align:center;color:var(--mute)}
+.split{font-size:12.5px;color:var(--mute);margin-top:6px}
+footer{text-align:center;color:var(--mute);font-size:12px;padding:10px 0 30px}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="poolName">Wrestling Pool</h1>
+  <div class="sub">Match picks · Champion pool · Rumble draw</div>
+</header>
+<nav>
+  <button data-act="tab" data-tab="board">🏆 Standings</button>
+  <button data-act="tab" data-tab="picks">✍️ Picks</button>
+  <button data-act="tab" data-tab="events">📅 Events</button>
+  <button data-act="tab" data-tab="titles">🥇 Titles</button>
+  <button data-act="tab" data-tab="rumble">🎲 Rumble</button>
+  <button data-act="tab" data-tab="settings">⚙️ Settings</button>
+</nav>
+<main id="view"></main>
+<footer>Saved in this browser · Export from Settings to back up or move devices</footer>
+
+<script>
+const KEY = 'wrestlingPool.v1';
+const METHODS = ['Pinfall', 'Submission', 'DQ / Count-out', 'KO / Ref stop', 'Other'];
+const $ = s => document.querySelector(s);
+const uid = () => Math.random().toString(36).slice(2, 10);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm = s => String(s ?? '').trim().toLowerCase();
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+function blank() {
+  return {
+    name: 'Wrestling Pool',
+    settings: { match: 1, title: 3, method: 1, champ: 5, rumble: 5 },
+    players: [], events: [], belts: [], champPicks: {}, champLocked: false,
+    rumble: { entrants: 30, assign: {}, winner: null },
+    ui: { tab: 'board', event: null, player: null }
+  };
+}
+function normalize(d) {
+  const b = blank();
+  const s = Object.assign(b, d || {});
+  s.settings = Object.assign(blank().settings, s.settings || {});
+  s.ui = Object.assign(blank().ui, s.ui || {});
+  s.rumble = Object.assign(blank().rumble, s.rumble || {});
+  s.events.forEach(e => { e.picks = e.picks || {}; e.matches = e.matches || []; });
+  return s;
+}
+let S;
+try { S = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+S = normalize(S);
+
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function set(fn) { fn(); save(); render(); }
+
+const curEvent = () => S.events.find(e => e.id === S.ui.event) || S.events[S.events.length - 1] || null;
+const curPlayer = () => S.players.find(p => p.id === S.ui.player) || S.players[0] || null;
+const matchPts = m => m.title ? +S.settings.title : +S.settings.match;
+
+/* ---------- Scoring ---------- */
+function scores() {
+  const st = S.settings;
+  const out = S.players.map(p => ({ p, correct: 0, method: 0, pickPts: 0, titles: 0, rumble: 0, total: 0, byEvent: {} }));
+  const by = Object.fromEntries(out.map(o => [o.p.id, o]));
+  for (const ev of S.events) {
+    for (const o of out) o.byEvent[ev.id] = 0;
+    for (const m of ev.matches) {
+      if (!m.winner) continue;
+      for (const o of out) {
+        const pk = ev.picks[o.p.id]?.[m.id];
+        if (!pk || pk.winner !== m.winner) continue;
+        let pts = matchPts(m); o.correct++;
+        if (m.method && pk.method === m.method) { pts += +st.method; o.method++; }
+        o.pickPts += pts; o.byEvent[ev.id] += pts;
+      }
+    }
+  }
+  for (const b of S.belts) {
+    if (!b.final) continue;
+    for (const o of out) if (norm(S.champPicks[o.p.id]?.[b.id]) === norm(b.final)) o.titles += +st.champ;
+  }
+  const rw = S.rumble.winner;
+  if (rw && S.rumble.assign[rw] && by[S.rumble.assign[rw]]) by[S.rumble.assign[rw]].rumble += +st.rumble;
+  out.forEach(o => o.total = o.pickPts + o.titles + o.rumble);
+  out.sort((a, b) => b.total - a.total || a.p.name.localeCompare(b.p.name));
+  let last = null, rank = 0;
+  out.forEach((o, i) => { if (o.total !== last) { rank = i + 1; last = o.total; } o.rank = rank; });
+  return out;
+}
+
+/* ---------- Shared bits ---------- */
+function eventSelect() {
+  const c = curEvent();
+  return `<select data-ch="pickEvent">${[...S.events].reverse().map(e =>
+    `<option value="${e.id}" ${c && e.id === c.id ? 'selected' : ''}>${esc(e.name)}${e.date ? ' — ' + esc(e.date) : ''}</option>`).join('')}</select>`;
+}
+function playerSelect(ev) {
+  const c = curPlayer();
+  return `<select data-ch="pickPlayer">${S.players.map(p => {
+    const n = ev ? ev.matches.filter(m => ev.picks[p.id]?.[m.id]?.winner).length : 0;
+    return `<option value="${p.id}" ${c && p.id === c.id ? 'selected' : ''}>${esc(p.name)}${ev ? ` (${n}/${ev.matches.length})` : ''}</option>`;
+  }).join('')}</select>`;
+}
+function methodSelect(ch, m, val, disabled) {
+  return `<select data-ch="${ch}" data-m="${m.id}" ${disabled ? 'disabled' : ''}>
+    <option value="">${ch === 'pickMethod' ? 'Method (bonus, optional)' : 'Method —'}</option>
+    ${METHODS.map(x => `<option ${val === x ? 'selected' : ''}>${x}</option>`).join('')}</select>`;
+}
+const matchup = m => m.sides.map(esc).join('<span class="vs">vs</span>');
+const titleBadge = m => m.title ? `<span class="badge">🏆 ${esc(m.titleName || 'Title match')}</span>` : '';
+const empty = (msg, btn) => `<div class="card empty">${msg}${btn ? `<div style="margin-top:12px">${btn}</div>` : ''}</div>`;
+
+/* ---------- Views ---------- */
+const VIEWS = {
+  board() {
+    const sc = scores();
+    let h = `<div class="card"><h2>Standings</h2>`;
+    if (!S.players.length) {
+      h += `<p class="mute">No one in the pool yet. Add players below, or load sample data from Settings to take it for a spin.</p>`;
+    } else {
+      h += sc.map(o => `<div class="lb ${o.rank === 1 && o.total > 0 ? 'top' : ''}">
+        <div class="rank">${o.rank === 1 && o.total > 0 ? '👑' : o.rank}</div>
+        <div class="who"><b>${esc(o.p.name)}</b>
+          <span class="mute small">${o.correct} correct · ${o.method} method bonus · titles ${o.titles} · rumble ${o.rumble}</span></div>
+        <div class="pts">${o.total}</div></div>`).join('');
+    }
+    h += `</div>`;
+
+    if (S.players.length && S.events.length) {
+      h += `<div class="card"><h2>Points by Event</h2><div class="scroll"><table><tr><th>Player</th>${S.events.map(e => `<th>${esc(e.name)}</th>`).join('')}<th>Titles</th><th>Rumble</th><th>Total</th></tr>
+        ${sc.map(o => `<tr><td>${esc(o.p.name)}</td>${S.events.map(e => `<td>${o.byEvent[e.id] || 0}</td>`).join('')}<td>${o.titles}</td><td>${o.rumble}</td><td class="tot">${o.total}</td></tr>`).join('')}
+        </table></div></div>`;
+    }
+
+    h += `<div class="card"><h2>Players</h2>
+      <div class="row" style="margin-bottom:10px"><input id="newPlayer" placeholder="Player name" data-enter="addPlayer"><button class="btn auto" data-act="addPlayer">Add player</button></div>
+      ${S.players.map(p => `<div class="item"><input value="${esc(p.name)}" data-ch="renamePlayer" data-id="${p.id}"><button class="btn sm ghost" data-act="delPlayer" data-id="${p.id}">Remove</button></div>`).join('')}
+    </div>`;
+    return h;
+  },
+
+  picks() {
+    if (!S.players.length) return empty('Add players on the Standings tab first.', `<button class="btn" data-act="tab" data-tab="board">Go to Standings</button>`);
+    if (!S.events.length) return empty('Create an event and add its matches first.', `<button class="btn" data-act="tab" data-tab="events">Go to Events</button>`);
+    const ev = curEvent(), p = curPlayer();
+    let h = `<div class="card"><h2>Make Picks</h2><div class="row">${eventSelect()}${playerSelect(ev)}<button class="btn ghost auto" data-act="nextPlayer">Next ▶</button></div>
+      ${ev.locked ? `<p class="lock">🔒 Picks are locked for this event.</p>` : ''}</div>`;
+    if (!ev.matches.length) return h + empty('No matches on this card yet. Add them on the Events tab.');
+    h += ev.matches.map((m, i) => {
+      const pk = ev.picks[p.id]?.[m.id] || {};
+      let res = '';
+      if (m.winner) {
+        if (pk.winner === m.winner) {
+          const bonus = m.method && pk.method === m.method ? +S.settings.method : 0;
+          res = `<span class="ok">✅ +${matchPts(m) + bonus}${bonus ? ' (method bonus!)' : ''}</span>`;
+        } else res = `<span class="bad">❌ ${pk.winner ? 'Missed' : 'No pick'}</span>`;
+      }
+      return `<div class="card">
+        <div class="mhead"><span class="mnum">Match ${i + 1} · ${matchPts(m)} pt${matchPts(m) === 1 ? '' : 's'}</span>${titleBadge(m)}</div>
+        <div class="sides">${m.sides.map((s, si) => `<button class="side ${pk.winner === s ? 'sel' : ''} ${m.winner === s ? 'won' : ''}" data-act="pickWinner" data-m="${m.id}" data-i="${si}" ${ev.locked ? 'disabled' : ''}>${esc(s)}</button>`).join('<span class="vs">vs</span>')}</div>
+        <div class="row">${methodSelect('pickMethod', m, pk.method, ev.locked)}${res ? `<div class="auto">${res}</div>` : ''}</div>
+      </div>`;
+    }).join('');
+    return h;
+  },
+
+  events() {
+    const ev = curEvent();
+    let h = `<div class="card"><h2>New Event</h2><div class="row">
+      <input id="evName" placeholder="Event name (e.g. SummerSlam)" data-enter="addEvent">
+      <input id="evDate" type="date" class="auto" style="width:auto">
+      <button class="btn auto" data-act="addEvent">Add event</button></div></div>`;
+    if (!ev) return h + empty('No events yet. Add your first card above.');
+    h += `<div class="card">${eventSelect()}
+      <div class="row" style="margin-top:12px">
+        <button class="btn sm ghost auto" data-act="toggleLock" data-id="${ev.id}">${ev.locked ? '🔒 Picks locked — tap to open' : '🔓 Picks open — tap to lock'}</button>
+        <div></div>
+        <button class="btn sm red auto" data-act="delEvent" data-id="${ev.id}">Delete event</button>
+      </div>
+      <h3>Add match</h3>
+      <input id="mSides" placeholder="Wrestler A vs Wrestler B  (add more with another vs)" data-enter="addMatch">
+      <div class="row" style="margin-top:8px">
+        <label class="chk auto"><input type="checkbox" id="mTitle"> Title match</label>
+        <input id="mTitleName" placeholder="Which title? (optional)" data-enter="addMatch">
+        <button class="btn auto" data-act="addMatch">Add match</button>
+      </div></div>`;
+    if (!ev.matches.length) return h + empty('No matches on this card yet.');
+    h += `<h3>Card &amp; Results</h3>`;
+    h += ev.matches.map((m, i) => {
+      const counts = m.sides.map(s => Object.values(ev.picks).filter(pp => pp[m.id]?.winner === s).length);
+      return `<div class="card">
+        <div class="mhead"><span class="mnum">Match ${i + 1}</span>${titleBadge(m)}
+          <span class="auto"><button class="btn sm ghost" data-act="moveMatch" data-m="${m.id}" data-d="-1" ${i === 0 ? 'disabled' : ''}>▲</button>
+          <button class="btn sm ghost" data-act="moveMatch" data-m="${m.id}" data-d="1" ${i === ev.matches.length - 1 ? 'disabled' : ''}>▼</button>
+          <button class="btn sm ghost" data-act="delMatch" data-m="${m.id}">✕</button></span></div>
+        <div class="matchup">${matchup(m)}</div>
+        <div class="row">
+          <select data-ch="setWinner" data-m="${m.id}"><option value="">Winner — not decided</option>${m.sides.map(s => `<option value="${esc(s)}" ${m.winner === s ? 'selected' : ''}>🏆 ${esc(s)}</option>`).join('')}</select>
+          ${methodSelect('setMethod', m, m.method, false)}
+        </div>
+        <div class="split">Picks: ${m.sides.map((s, si) => `${esc(s)} ${counts[si]}`).join(' · ')}</div>
+      </div>`;
+    }).join('');
+    return h;
+  },
+
+  titles() {
+    const names = new Set();
+    S.events.forEach(e => e.matches.forEach(m => m.sides.forEach(s => names.add(s))));
+    S.belts.forEach(b => { if (b.champion) names.add(b.champion); });
+    let h = `<div class="card"><h2>Champion Pool</h2>
+      <p class="mute small" style="margin-top:-4px">Everyone predicts who holds each belt at season's end. Fill in the final champion to score it — +${S.settings.champ} per correct call.</p>
+      <div class="row"><input id="bName" placeholder="Title (e.g. World Heavyweight)" data-enter="addBelt"><input id="bChamp" placeholder="Current champion" data-enter="addBelt"><button class="btn auto" data-act="addBelt">Add title</button></div></div>`;
+    if (!S.belts.length) return h + empty('No titles added yet.');
+    h += `<div class="card"><h2>Titles</h2>${S.belts.map(b => `
+      <div class="card" style="background:var(--panel2);margin-bottom:10px">
+        <div class="mhead"><input value="${esc(b.name)}" data-ch="beltField" data-k="name" data-id="${b.id}" style="font-weight:800;flex:1"><button class="btn sm ghost auto" data-act="delBelt" data-id="${b.id}">✕</button></div>
+        <div class="grid2" style="margin-top:8px">
+          <div class="field"><label>Current champion</label><input value="${esc(b.champion)}" list="names" data-ch="beltField" data-k="champion" data-id="${b.id}"></div>
+          <div class="field"><label>Season-end champion (scores it)</label><input value="${esc(b.final)}" list="names" placeholder="Leave blank until settled" data-ch="beltField" data-k="final" data-id="${b.id}"></div>
+        </div></div>`).join('')}</div>`;
+    if (!S.players.length) return h + empty('Add players to collect champion picks.');
+    h += `<div class="card"><div class="mhead"><h2 style="margin:0">Predictions</h2><button class="btn sm ghost auto" data-act="toggleChampLock">${S.champLocked ? '🔒 Locked' : '🔓 Open'}</button></div>
+      ${S.players.map(p => `<h3>${esc(p.name)}</h3><div class="grid2">${S.belts.map(b => {
+        const v = S.champPicks[p.id]?.[b.id] || '';
+        const mark = b.final ? (norm(v) === norm(b.final) ? ' <span class="ok">✅</span>' : ' <span class="bad">❌</span>') : '';
+        return `<div class="field"><label>${esc(b.name)}${mark}</label><input value="${esc(v)}" list="names" data-ch="champPick" data-p="${p.id}" data-b="${b.id}" ${S.champLocked ? 'disabled' : ''}></div>`;
+      }).join('')}</div>`).join('')}
+      <datalist id="names">${[...names].map(n => `<option value="${esc(n)}">`).join('')}</datalist></div>`;
+    return h;
+  },
+
+  rumble() {
+    const r = S.rumble, drawn = Object.keys(r.assign).length > 0;
+    let h = `<div class="card"><h2>Rumble Draw</h2>
+      <p class="mute small" style="margin-top:-4px">Randomly deal entrant numbers to the pool. Whoever holds the winner's number gets +${S.settings.rumble}.</p>
+      <div class="row"><div class="field"><label>Number of entrants</label><input id="rN" type="number" min="2" max="100" value="${r.entrants}"></div>
+      <button class="btn auto" data-act="draw" style="align-self:flex-end">${drawn ? 'Redraw' : 'Draw numbers'}</button>
+      ${drawn ? `<button class="btn ghost auto" data-act="clearRumble" style="align-self:flex-end">Clear</button>` : ''}</div></div>`;
+    if (!drawn) return h;
+    const owner = r.winner ? S.players.find(p => p.id === r.assign[r.winner]) : null;
+    h += `<div class="card">
+      <div class="field" style="max-width:220px;margin-bottom:12px"><label>Winning entrant #</label><input type="number" min="1" max="${r.entrants}" value="${r.winner ?? ''}" data-ch="rumbleWinner" placeholder="Enter when it's over"></div>
+      ${r.winner ? `<div class="banner">${owner ? `🎉 #${r.winner} belongs to ${esc(owner.name)}!` : `#${r.winner} isn't assigned to anyone`}</div>` : ''}
+      ${S.players.map(p => {
+        const nums = Object.keys(r.assign).filter(n => r.assign[n] === p.id).map(Number).sort((a, b) => a - b);
+        return `<div style="margin-bottom:8px"><b>${esc(p.name)}</b><br>${nums.map(n => `<span class="chip ${n === r.winner ? 'win' : ''}">#${n}</span>`).join('') || '<span class="mute small">No numbers</span>'}</div>`;
+      }).join('')}</div>`;
+    return h;
+  },
+
+  settings() {
+    const st = S.settings;
+    const f = (k, label) => `<div class="field"><label>${label}</label><input type="number" min="0" value="${st[k]}" data-ch="pts" data-k="${k}"></div>`;
+    return `<div class="card"><h2>Pool</h2><div class="field"><label>Pool name</label><input value="${esc(S.name)}" data-ch="poolName"></div></div>
+      <div class="card"><h2>Scoring</h2><div class="grid2">
+        ${f('match', 'Regular match')}${f('title', 'Title match')}${f('method', 'Method bonus')}${f('champ', 'Champion call')}${f('rumble', 'Rumble winner')}
+      </div><p class="mute small">Method bonus only counts when the winner pick is also right.</p></div>
+      <div class="card"><h2>Data</h2>
+        <p class="mute small" style="margin-top:-4px">Everything saves in this browser. Export a backup to share with the group or move to another device.</p>
+        <div class="row">
+          <button class="btn auto" data-act="exportData">⬇ Export backup</button>
+          <label class="btn ghost auto">⬆ Import backup<input type="file" accept=".json,application/json" data-ch="importFile" hidden></label>
+          <button class="btn ghost auto" data-act="sample">Load sample data</button>
+          <button class="btn red auto" data-act="reset">Reset pool</button>
+        </div></div>`;
+  }
+};
+
+function render() {
+  if (!VIEWS[S.ui.tab]) S.ui.tab = 'board';
+  $('#poolName').textContent = S.name; document.title = S.name;
+  document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.tab === S.ui.tab));
+  $('#view').innerHTML = VIEWS[S.ui.tab]();
+}
+
+/* ---------- Sample data ---------- */
+function sampleData() {
+  const s = blank(); s.name = 'Wrestling Pool';
+  s.players = ['Big Mike', 'Tasha', 'Uncle Ray', 'Jo'].map(n => ({ id: uid(), name: n }));
+  const m = [
+    { id: uid(), sides: ['The Titan', 'Blaze Carter'], title: true, titleName: 'World Title', winner: 'The Titan', method: 'Pinfall' },
+    { id: uid(), sides: ['Viper Kane', 'Rico Santos', 'Ash Moreno'], title: false, titleName: '', winner: 'Rico Santos', method: 'Submission' },
+    { id: uid(), sides: ['The Bruisers', 'Night Shift'], title: false, titleName: '', winner: 'Night Shift', method: 'DQ / Count-out' },
+    { id: uid(), sides: ['Lady Havoc', 'Stella Storm'], title: true, titleName: "Women's Title", winner: null, method: null }
+  ];
+  const ev = { id: uid(), name: 'Sample Showdown', date: new Date().toISOString().slice(0, 10), locked: true, matches: m, picks: {} };
+  s.players.forEach(p => {
+    ev.picks[p.id] = {};
+    m.forEach(x => ev.picks[p.id][x.id] = { winner: x.sides[Math.floor(Math.random() * x.sides.length)], method: Math.random() < .5 ? METHODS[Math.floor(Math.random() * 3)] : null });
+  });
+  s.events = [ev];
+  s.belts = [{ id: uid(), name: 'World Title', champion: 'The Titan', final: '' }, { id: uid(), name: "Women's Title", champion: 'Lady Havoc', final: '' }];
+  const pool = ['The Titan', 'Blaze Carter', 'Lady Havoc', 'Stella Storm'];
+  s.players.forEach(p => s.champPicks[p.id] = { [s.belts[0].id]: pool[Math.floor(Math.random() * 2)], [s.belts[1].id]: pool[2 + Math.floor(Math.random() * 2)] });
+  return s;
+}
+
+/* ---------- Actions ---------- */
+const findMatch = id => curEvent().matches.find(x => x.id === id);
+const ACT = {
+  tab: el => { S.ui.tab = el.dataset.tab; save(); render(); window.scrollTo(0, 0); },
+  addPlayer: () => {
+    const n = $('#newPlayer').value.trim(); if (!n) return;
+    set(() => S.players.push({ id: uid(), name: n })); $('#newPlayer').focus();
+  },
+  delPlayer: el => {
+    const p = S.players.find(x => x.id === el.dataset.id);
+    if (!confirm(`Remove ${p.name} and all their picks?`)) return;
+    set(() => {
+      S.players = S.players.filter(x => x.id !== p.id);
+      S.events.forEach(e => delete e.picks[p.id]);
+      delete S.champPicks[p.id];
+      for (const k in S.rumble.assign) if (S.rumble.assign[k] === p.id) delete S.rumble.assign[k];
+      if (S.ui.player === p.id) S.ui.player = null;
+    });
+  },
+  addEvent: () => {
+    const n = $('#evName').value.trim(); if (!n) { $('#evName').focus(); return; }
+    const e = { id: uid(), name: n, date: $('#evDate').value, locked: false, matches: [], picks: {} };
+    set(() => { S.events.push(e); S.ui.event = e.id; });
+  },
+  delEvent: el => {
+    if (!confirm('Delete this event and all its picks?')) return;
+    set(() => { S.events = S.events.filter(e => e.id !== el.dataset.id); S.ui.event = null; });
+  },
+  toggleLock: el => set(() => { const e = S.events.find(x => x.id === el.dataset.id); e.locked = !e.locked; }),
+  addMatch: () => {
+    const e = curEvent();
+    const sides = $('#mSides').value.split(/\s+vs\.?\s+/i).map(s => s.trim()).filter(Boolean);
+    if (sides.length < 2) { alert('Enter at least two sides, like "Wrestler A vs Wrestler B".'); return; }
+    if (new Set(sides.map(norm)).size !== sides.length) { alert('Each side needs a different name.'); return; }
+    set(() => e.matches.push({ id: uid(), sides, title: $('#mTitle').checked, titleName: $('#mTitleName').value.trim(), winner: null, method: null }));
+    $('#mSides').focus();
+  },
+  moveMatch: el => set(() => {
+    const e = curEvent(), i = e.matches.findIndex(m => m.id === el.dataset.m), j = i + (+el.dataset.d);
+    if (j >= 0 && j < e.matches.length) [e.matches[i], e.matches[j]] = [e.matches[j], e.matches[i]];
+  }),
+  delMatch: el => {
+    if (!confirm('Delete this match?')) return;
+    set(() => { const e = curEvent(); e.matches = e.matches.filter(m => m.id !== el.dataset.m); for (const p in e.picks) delete e.picks[p][el.dataset.m]; });
+  },
+  pickWinner: el => {
+    const e = curEvent(), p = curPlayer(), m = findMatch(el.dataset.m), s = m.sides[+el.dataset.i];
+    if (e.locked) return;
+    set(() => { const pk = ((e.picks[p.id] ??= {})[m.id] ??= {}); pk.winner = pk.winner === s ? null : s; });
+  },
+  nextPlayer: () => set(() => { const i = S.players.findIndex(p => p.id === curPlayer().id); S.ui.player = S.players[(i + 1) % S.players.length].id; window.scrollTo(0, 0); }),
+  addBelt: () => {
+    const n = $('#bName').value.trim(); if (!n) { $('#bName').focus(); return; }
+    set(() => S.belts.push({ id: uid(), name: n, champion: $('#bChamp').value.trim(), final: '' }));
+  },
+  delBelt: el => {
+    if (!confirm('Delete this title and its predictions?')) return;
+    set(() => { S.belts = S.belts.filter(b => b.id !== el.dataset.id); for (const p in S.champPicks) delete S.champPicks[p][el.dataset.id]; });
+  },
+  toggleChampLock: () => set(() => S.champLocked = !S.champLocked),
+  draw: () => {
+    if (!S.players.length) { alert('Add players first.'); return; }
+    const n = Math.max(2, Math.min(100, parseInt($('#rN').value) || 30));
+    if (Object.keys(S.rumble.assign).length && !confirm('Redraw all numbers?')) return;
+    const nums = shuffle([...Array(n)].map((_, i) => i + 1)), ps = shuffle(S.players.map(p => p.id)), a = {};
+    nums.forEach((num, i) => a[num] = ps[i % ps.length]);
+    set(() => S.rumble = { entrants: n, assign: a, winner: null });
+  },
+  clearRumble: () => { if (confirm('Clear the draw?')) set(() => S.rumble = { entrants: S.rumble.entrants, assign: {}, winner: null }); },
+  exportData: () => {
+    const { ui, ...data } = S;
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${S.name.replace(/[^\w]+/g, '-').toLowerCase()}-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  },
+  sample: () => {
+    if ((S.players.length || S.events.length) && !confirm('Replace the current pool with sample data?')) return;
+    S = sampleData(); S.ui.tab = 'board'; save(); render();
+  },
+  reset: () => { if (confirm('Erase everything in this pool? Export first if you want a backup.')) { S = blank(); save(); render(); } }
+};
+
+const CH = {
+  renamePlayer: el => { const p = S.players.find(x => x.id === el.dataset.id); p.name = el.value.trim() || p.name; save(); },
+  pickEvent: el => set(() => S.ui.event = el.value),
+  pickPlayer: el => set(() => S.ui.player = el.value),
+  setWinner: el => set(() => findMatch(el.dataset.m).winner = el.value || null),
+  setMethod: el => set(() => findMatch(el.dataset.m).method = el.value || null),
+  pickMethod: el => {
+    const e = curEvent(), p = curPlayer(); if (e.locked) return;
+    set(() => ((e.picks[p.id] ??= {})[el.dataset.m] ??= {}).method = el.value || null);
+  },
+  beltField: el => {
+    const b = S.belts.find(x => x.id === el.dataset.id);
+    b[el.dataset.k] = el.value.trim(); if (el.dataset.k === 'name' && !b.name) b.name = 'Title';
+    save(); if (el.dataset.k === 'final') render();
+  },
+  champPick: el => { if (S.champLocked) return; (S.champPicks[el.dataset.p] ??= {})[el.dataset.b] = el.value.trim(); save(); },
+  rumbleWinner: el => set(() => { const v = parseInt(el.value); S.rumble.winner = v > 0 ? v : null; }),
+  poolName: el => { S.name = el.value.trim() || 'Wrestling Pool'; save(); $('#poolName').textContent = S.name; document.title = S.name; },
+  pts: el => { S.settings[el.dataset.k] = Math.max(0, parseInt(el.value) || 0); save(); },
+  importFile: el => {
+    const f = el.files[0]; if (!f) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try {
+        const d = JSON.parse(r.result);
+        if (!d || !Array.isArray(d.players) || !Array.isArray(d.events)) throw 0;
+        if (!confirm('Replace this pool with the imported backup?')) return;
+        S = normalize(d); save(); render();
+      } catch (e) { alert("That file doesn't look like a pool backup."); }
+    };
+    r.readAsText(f);
+  }
+};
+
+document.addEventListener('click', e => { const el = e.target.closest('[data-act]'); if (el && !el.disabled) ACT[el.dataset.act]?.(el); });
+document.addEventListener('change', e => { const el = e.target.closest('[data-ch]'); if (el) CH[el.dataset.ch]?.(el); });
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const el = e.target.closest('[data-enter]');
+  if (el) { e.preventDefault(); ACT[el.dataset.enter](); }
+});
+render();
+</script>
+</body>
+</html>
